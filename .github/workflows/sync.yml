@@ -1,0 +1,15 @@
+name: Sync sensors
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the live sync
+        run: |
+          curl --fail --silent --show-error -m 120 \
+            "https://swimp3-test-run.vercel.app/api/sync/all?secret=${{ secrets.CRON_SECRET }}"
