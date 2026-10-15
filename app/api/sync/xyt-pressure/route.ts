@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getPressureDevice } from "@/lib/xyt/client";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Pulls live readings from the XYT pressure-sensor platform
  * (111.19.141.81:8089) and writes them into this project's own Supabase

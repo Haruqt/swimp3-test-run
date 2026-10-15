@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getMeterData } from "@/lib/watermeter/client";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Pulls live readings from the smart water meter platform
  * (47.103.146.199:6071) and writes them into this project's own Supabase

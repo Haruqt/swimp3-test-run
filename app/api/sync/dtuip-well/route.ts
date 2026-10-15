@@ -4,6 +4,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { getSensorsByDeviceId } from "@/lib/dtuip/client";
 import { getWellSensorsViaOAuth } from "@/lib/dtuip-well-oauth/client";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Pulls live Groundwater Well sensor data and writes it into this
  * project's own Supabase `sensor_readings` table.

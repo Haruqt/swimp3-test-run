@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getReservoirSensors } from "@/lib/dtuip-reservoir/client";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Pulls live Groundwater Reservoir data from app.dtuip.com (device 254722)
  * and writes it into Supabase. This device was previously believed to be
