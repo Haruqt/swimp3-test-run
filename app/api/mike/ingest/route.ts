@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { mikeDecrypt } from "@/lib/mikeCrypto";
+import { parseVendorTime } from "@/lib/parseLocalTime";
 
 export const dynamic = "force-dynamic";
 
@@ -40,7 +41,7 @@ export async function POST(request: Request) {
   const age = Number(payload.level_data_age_days);
   const row = {
     analysis_id: payload.analysis_id != null ? String(payload.analysis_id) : null,
-    analysis_timestamp: payload.analysis_timestamp ? new Date(payload.analysis_timestamp).toISOString() : new Date().toISOString(),
+    analysis_timestamp: (parseVendorTime(payload.analysis_timestamp) ?? new Date()).toISOString(),
     reservoir_level_m: Number.isFinite(level) ? level : null,
     level_data_age_days: Number.isFinite(age) ? age : null,
     overall_status: risk.overall_status != null ? String(risk.overall_status) : null,
