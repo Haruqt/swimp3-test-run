@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+ 
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-size: 112.5%; /* 18px baseline instead of the browser default 16px — scales all rem-based text/spacing site-wide for readability */
+  }
+  body {
+    @apply text-ink;
+    background-color: #ffffff;
+  }
+  :focus-visible {
+    outline: 2px solid #2e7d8c;
+    outline-offset: 2px;
+  }
+}
+ 
+/* Leaflet needs its own stylesheet imported in layout. z-index:0 keeps
+   map tiles from rendering on top of the fixed floating navbar. This
+   also traps Leaflet's own internal control z-index (1000) below the
+   navbar wherever they'd overlap it — instead of fighting that with more
+   z-index tricks (which can't let a child escape its parent's stacking
+   context), the fix below just moves the top controls down clear of the
+   navbar's footprint entirely, so they never overlap it to begin with. */
+.leaflet-container {
+  font-family: var(--font-sans);
+  z-index: 0;
+}
+
+/* Push zoom controls and the layers/legend control down below the
+   floating navbar (~top-4 + its own height) instead of tucking underneath
+   it, where they were unclickable. */
+.leaflet-top {
+  /* Was 96px — measured the navbar's real rendered height via a live
+     browser and it's 101px (18px top offset + 83px header), so the old
+     value put the top ~5px of these controls underneath the navbar,
+     which is enough to make them unclickable even though they're still
+     visible through the navbar's translucent background. 112px clears
+     it with real margin instead of a number that was already too tight. */
+  top: 112px !important;
+}
