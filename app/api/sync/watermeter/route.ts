@@ -1,3 +1,4 @@
+import { parseVendorTime } from "@/lib/parseLocalTime";
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getMeterData } from "@/lib/watermeter/client";
@@ -41,9 +42,6 @@ const METER_ID_TO_EXTERNAL_DEVICE_ID: Record<string, string> = {
 // silently defaulting to "now", since we have no real evidence it's alive.
 const ONLINE_MAX_AGE_MS = 2 * 60 * 60 * 1000; // reported within last 2h
 const STALE_MAX_AGE_MS = 24 * 60 * 60 * 1000; // reported within last 24h
-
-// Always run on request — never prerender this at build time or cache its response.
-export const dynamic = "force-dynamic";
 
 export async function GET() {
   const supabase = createAdminClient();
@@ -100,8 +98,9 @@ export async function GET() {
 
     // Real last-report time from the vendor, used both as recorded_at and
     // to derive online/stale/offline status below.
-    const commTime = new Date(reading.CommunicationTime);
-    const commTimeValid = !Number.isNaN(commTime.getTime());
+    const parsedComm = parseVendorTime(reading.CommunicationTime);
+    const commTime = parsedComm ?? new Date(NaN);
+    const commTimeValid = parsedComm !== null;
     const recordedAt = commTimeValid ? commTime.toISOString() : new Date().toISOString();
 
     const ageMs = commTimeValid ? Date.now() - commTime.getTime() : Infinity;

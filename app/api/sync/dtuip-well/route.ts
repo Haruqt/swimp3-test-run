@@ -1,3 +1,4 @@
+import { parseVendorTime } from "@/lib/parseLocalTime";
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getSensorsByDeviceId } from "@/lib/dtuip/client";
@@ -68,10 +69,7 @@ const METRIC_UNITS: Record<string, string> = {
  * Reservoir's `updateDate`). Falls back to "now" if missing/unparseable.
  */
 function parseDtuipTimestamp(raw: string | null | undefined): string {
-  if (!raw) return new Date().toISOString();
-  const isoish = raw.replace(/^(\d{4})\/(\d{2})\/(\d{2})\s+(\d{2}:\d{2}:\d{2})$/, "$1-$2-$3T$4");
-  const parsed = new Date(isoish);
-  return Number.isNaN(parsed.getTime()) ? new Date().toISOString() : parsed.toISOString();
+  return (parseVendorTime(raw) ?? new Date()).toISOString();
 }
 
 interface NormalizedReading {
@@ -80,9 +78,6 @@ interface NormalizedReading {
   unit: string;
   recordedAt: string;
 }
-
-// Always run on request — never prerender this at build time or cache its response.
-export const dynamic = "force-dynamic";
 
 export async function GET() {
   const supabase = createAdminClient();

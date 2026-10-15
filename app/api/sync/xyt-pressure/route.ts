@@ -1,3 +1,4 @@
+import { parseVendorTime } from "@/lib/parseLocalTime";
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getPressureDevice } from "@/lib/xyt/client";
@@ -58,14 +59,8 @@ const XYT_ONLINE_VALUE = "在线";
  * unparseable.
  */
 function parseXytTimestamp(raw: string | null | undefined): string {
-  if (!raw) return new Date().toISOString();
-  const isoish = raw.replace(" ", "T");
-  const parsed = new Date(isoish);
-  return Number.isNaN(parsed.getTime()) ? new Date().toISOString() : parsed.toISOString();
+  return (parseVendorTime(raw) ?? new Date()).toISOString();
 }
-
-// Always run on request — never prerender this at build time or cache its response.
-export const dynamic = "force-dynamic";
 
 export async function GET() {
   const supabase = createAdminClient();

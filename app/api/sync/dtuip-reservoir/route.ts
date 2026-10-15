@@ -1,3 +1,4 @@
+import { parseVendorTime } from "@/lib/parseLocalTime";
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getReservoirSensors } from "@/lib/dtuip-reservoir/client";
@@ -45,13 +46,8 @@ const METRIC_UNITS: Record<string, string> = {
 };
 
 function parseReservoirTimestamp(raw: string | undefined): string {
-  if (!raw) return new Date().toISOString();
-  const parsed = new Date(raw);
-  return Number.isNaN(parsed.getTime()) ? new Date().toISOString() : parsed.toISOString();
+  return (parseVendorTime(raw) ?? new Date()).toISOString();
 }
-
-// Always run on request — never prerender this at build time or cache its response.
-export const dynamic = "force-dynamic";
 
 export async function GET() {
   const supabase = createAdminClient();
