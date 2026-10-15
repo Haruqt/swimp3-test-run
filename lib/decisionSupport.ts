@@ -44,6 +44,13 @@ export function evaluateThreshold(
   return { status: "normal", message: "Within the safe operating range." };
 }
 
+export interface QualityDistribution {
+  optimal: number;
+  warning: number;
+  critical: number;
+  offline: number;
+}
+
 export interface TrendResult {
   direction: "rising" | "falling" | "stable";
   percentChange: number;
